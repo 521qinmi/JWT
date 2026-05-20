@@ -37,7 +37,7 @@ public class AuthController {
 
         // 返回给 Salesforce iframe URL
         String iframeUrl =
-                "https://jwt-px9l.onrender.com/view?token="
+                "https://jwt-px9l.onrender.com/auth/view?token="
                         + URLEncoder.encode(
                         jwtToken,
                         StandardCharsets.UTF_8
