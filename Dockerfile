@@ -1,13 +1,24 @@
-FROM eclipse-temurin:17-jdk
+# ===== Build Stage =====
+FROM maven:3.9.9-eclipse-temurin-17 AS builder
 
 WORKDIR /app
 
-COPY . .
+COPY pom.xml .
 
-RUN chmod +x mvnw || true
+RUN mvn dependency:go-offline
 
-RUN ./mvnw package -DskipTests || mvn package -DskipTests
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
+
+# ===== Run Stage =====
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+COPY --from=builder /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-CMD ["java","-jar","target/gse-render-simple-1.0.0.jar"]
+CMD ["java","-jar","app.jar"]
